@@ -1,0 +1,109 @@
+{
+	"variables": {
+		"iso_url": "https://mirrors.ocf.berkeley.edu/archlinux/iso/2020.05.01/archlinux-2020.05.01-x86_64.iso",
+		"iso_checksum_url": "https://mirrors.ocf.berkeley.edu/archlinux/iso/2020.05.01/sha1sums.txt",
+		"iso_checksum_type": "sha1",
+		"ssh_timeout": "1m",
+		"ssh_port": "22",
+		"country": "US",
+		"region": "Central",
+		"headless": "false",
+		"guest_additions_path": "/tmp/",
+		"arch_user": "testuser",
+		"arch_pass": "testpass12",
+		"encryption_pass": "testpass12",
+		"arch_iso_filename": "arch_amd64_{{isotime \"2006_01\"}}_01",
+		"arch_iso_path": "packer_cache",
+		"output_path": "output-virtualbox-iso",
+		"memory": "4096",
+		"cpus": "2",
+		"root_size": "8GB",
+		"hostname": "grizzarch",
+		"arch_vol_grp_name": "GrizzVolGrp"
+	},
+	"builders": [
+		{
+			"type": "virtualbox-iso",
+			"iso_url": "{{ user `iso_url` }}",
+			"iso_checksum_url": "{{ user `iso_checksum_url` }}",
+			"iso_checksum_type": "{{ user `iso_checksum_type` }}",
+			"guest_os_type": "ArchLinux_64",
+			"guest_additions_mode": "disable",
+			"http_directory": "http",
+			"boot_wait": "3s",
+			"iso_target_path": "{{user `arch_iso_path`}}/{{user `arch_iso_filename`}}.iso",
+			"disk_size": 20480,
+			"hard_drive_interface": "sata",
+			"ssh_username": "{{user `arch_user`}}",
+			"ssh_password": "{{user `arch_pass`}}",
+			"ssh_timeout": "{{ user `ssh_timeout` }}",
+			"shutdown_command": "echo '{{ user `arch_pass` }}' | sudo -S shutdown now",
+			"headless": "{{ user `headless`}}",
+			"boot_command": [
+				"<up><up><enter><wait30>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/user-setup.sh<enter><wait5>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/set_up_drives_LVM_on_LUKS.sh<enter><wait5>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/arch-install.sh<enter><wait5>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/sfdisk_input.conf<enter><wait5>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/mkinitcpio-custom.conf<enter><wait5>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/configure-arch.sh<enter><wait5>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/setup-arch-user.sh<enter><wait5>",
+				"chown root ./*.sh<enter><wait1>",
+				"chmod 744 ./*.sh<enter><wait1>",
+				"/usr/bin/bash ./set_up_drives_LVM_on_LUKS.sh -p ./sfdisk_input.conf -g GrizzVolGrp -d \"/dev/sda\" -r \"{{user `root_size`}}\" -P {{user `encryption_pass`}}<enter><wait5>",
+				"/usr/bin/bash ./arch-install.sh -f \"mkinitcpio-custom.conf\" -p \".\"<enter><wait110>",
+				"mv ./configure-arch.sh /mnt/configure-arch.sh<enter><wait1>",
+				"mv ./setup-arch-user.sh /mnt/setup-arch-user.sh<enter><wait1>",
+				"arch-chroot /mnt<enter><wait3>",
+				"./configure-arch.sh -c \"{{ user `country` }}\" -r \"{{ user `region` }}\" -h {{ user `hostname` }} -g {{ user `arch_vol_grp_name` }}<enter><wait30>",
+				"./setup-arch-user.sh -s {{ user `ssh_port` }} -u {{ user `arch_user` }} -p {{ user `arch_pass` }}<enter><wait10>",
+				"pacman -Sy --noconfirm virtualbox-guest-utils<enter><wait5>",
+				"exit<enter><wait2>",
+				"reboot now<enter><wait95>"
+			],
+			"vboxmanage": [
+				[
+					"clonemedium",
+					"disk",
+					"{{user `output_path`}}/{{.Name}}.vdi",
+					"{{user `output_path`}}/{{.Name}}fixed.vdi",
+					"--variant",
+					"Fixed"
+				],
+				[
+					"storageattach",
+					"{{.Name}}",
+					"--storagectl",
+					"SATA Controller",
+					"--device",
+					"0",
+					"--port",
+					"0",
+					"--type",
+					"hdd",
+					"--medium",
+					"{{user `output_path`}}/{{.Name}}fixed.vdi"
+				],
+				[
+					"modifyvm",
+					"{{.Name}}",
+					"--memory",
+					"{{user `memory`}}"
+				],
+				[
+					"modifyvm",
+					"{{.Name}}",
+					"--cpus",
+					"{{user `cpus`}}"
+				],
+				[
+					"modifyvm",
+					"{{.Name}}",
+					"--firmware",
+					"efi64"
+				]
+			]
+		}
+	],
+	"provisioners": []
+}

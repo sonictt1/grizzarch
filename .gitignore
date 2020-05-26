@@ -1,0 +1,13 @@
+# VS Code workspace directory
+.vscode/
+
+# Packer Cache
+packer_cache/
+
+# iso output dir
+output-virtualbox-iso/
+
+# For convenience, don't commit log.txt
+# If you name your packer log output file 
+# log.txt it won't be accidentally committed
+log.txt
