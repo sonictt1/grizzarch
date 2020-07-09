@@ -1,10 +1,11 @@
 # VS Code workspace directory
 .vscode/
 
-# Packer Cache
+# Packer Cache, avoids committing useless build artifacts
 packer_cache/
 
-# iso output dir
+# iso output dir, avoids committing complete builds 
+# (that's what GH Actions is for)
 output-virtualbox-iso/
 
 # For convenience, don't commit log.txt
