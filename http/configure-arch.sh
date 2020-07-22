@@ -82,5 +82,3 @@ KERNELVER=$(ls /lib/modules/)
 mkinitcpio -c /etc/mkinitcpio-custom.conf -k $KERNELVER -g /boot/initramfs-linux.img
 
 chmod 0400 /boot/keyfile
-
-# echo "$USERNAME $HOSTNAME =NOPASSWD: /usr/bin/systemctl poweroff,/usr/bin/systemctl halt,/usr/bin/systemctl reboot" >> /etc/sudoers.d/powermgmt

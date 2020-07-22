@@ -1,5 +1,3 @@
-#!/usr/bin/bash
-
 while getopts p:P:g:d:r: option
     do 
         case "${option}"
@@ -32,7 +30,6 @@ pvcreate /dev/mapper/cryptlvm
 vgcreate $VOLGROUPNAME /dev/mapper/cryptlvm
 
 # Create logical columes inside volume group
-lvcreate -L 8GB $VOLGROUPNAME -n root
 lvcreate -L $ROOTSIZE $VOLGROUPNAME -n root
 lvcreate -l 100%FREE $VOLGROUPNAME -n home
 

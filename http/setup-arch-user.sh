@@ -14,7 +14,6 @@ while getopts u:p:s: option
     done
 
 useradd -m $USERNAME
-# useradd -g power $username 
 echo "$USERNAME:$STARTPASS" | chpasswd
 echo "%$USERNAME ALL=(ALL) ALL" >> /etc/sudoers
 
