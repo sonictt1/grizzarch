@@ -19,7 +19,9 @@
 		"cpus": "2",
 		"root_size": "8GB",
 		"hostname": "grizzarch",
-		"arch_vol_grp_name": "GrizzVolGrp"
+		"arch_vol_grp_name": "GrizzVolGrp",
+		"temp_install_script_folder_name": "temp_install_scripts",
+		"skip_export": "false"
 	},
 	"builders": [
 		{
@@ -42,6 +44,7 @@
 			"cpus": "{{ user `cpus` }}",
 			"memory": "{{ user `memory` }}",
 			"vm_name": "grizzarch-automated-{{ isotime \"2006-01-02-030405\" }}",
+			"skip_export": "{{ user `skip_export` }}",
 			"boot_command": [
 				"<up><up><enter><wait30>",
 				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/user-setup.sh<enter><wait3>",
@@ -52,18 +55,20 @@
 				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/configure-arch.sh<enter><wait3>",
 				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/setup-arch-user.sh<enter><wait3>",
 				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/swap-file-setup.sh<enter><wait3>",
+				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/move_files_to_new_install.sh<enter><wait3>",
 				"chown root ./*.sh<enter><wait1>",
 				"chmod 744 ./*.sh<enter><wait1>",
 				"/usr/bin/bash ./set_up_drives_LVM_on_LUKS.sh -p ./sfdisk_input.conf -g GrizzVolGrp -d \"/dev/sda\" -r \"{{user `root_size`}}\" -P {{user `encryption_pass`}}<enter><wait5>",
-				"/usr/bin/bash ./arch-install.sh -f \"mkinitcpio-custom.conf\" -p \".\"<enter><wait110>",
-				"mv ./configure-arch.sh /mnt/configure-arch.sh<enter><wait1>",
-				"mv ./setup-arch-user.sh /mnt/setup-arch-user.sh<enter><wait1>",
+				"/usr/bin/bash ./arch-install.sh -f \"mkinitcpio-custom.conf\" -p \".\"<wait1><enter><wait110>",
+				"/usr/bin/bash ./move_files_to_new_install.sh -n {{ user `temp_install_script_folder_name` }}<enter><wait3>",
 				"arch-chroot /mnt<enter><wait3>",
-				"./configure-arch.sh -c \"{{ user `country` }}\" -r \"{{ user `region` }}\" -h {{ user `hostname` }} -g {{ user `arch_vol_grp_name` }}<enter><wait30>",
-				"./swap-file-setup.sh<enter><wait3>",
-				"./setup-arch-user.sh -s {{ user `ssh_port` }} -u {{ user `arch_user` }} -p {{ user `arch_pass` }}<enter><wait10>",
+				"./{{ user `temp_install_script_folder_name` }}/configure-arch.sh -c '{{ user `country` }}' -r '{{ user `region` }}' -h {{ user `hostname` }} -g {{ user `arch_vol_grp_name` }}<enter><wait30>",
+				"./{{ user `temp_install_script_folder_name` }}/swap-file-setup.sh<enter><wait3>",
+				"./{{ user `temp_install_script_folder_name` }}/setup-arch-user.sh -s {{ user `ssh_port` }} -u {{ user `arch_user` }} -p {{ user `arch_pass` }}<enter><wait10>",
+				"rm -r {{ user `temp_install_script_folder_name` }}<enter><wait1>",
 				"pacman -Sy --noconfirm virtualbox-guest-utils<enter><wait5>",
 				"exit<enter><wait2>",
+				"efibootmgr --bootnum 0001 --inactive<enter><wait1>",
 				"reboot now<enter><wait100s>"
 			],
 			"vboxmanage": [
@@ -79,7 +84,9 @@
 	"provisioners": [
 		{
 			"type": "shell",
-			"script": "ssh/other-packages.sh",
+			"scripts": [
+				"ssh/other-packages.sh"
+			],
 			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
 		}
 	]

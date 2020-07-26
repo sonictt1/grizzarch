@@ -42,7 +42,7 @@ mount /dev/$VOLGROUPNAME/root /mnt
 mkdir /mnt/home
 mount /dev/$VOLGROUPNAME/home /mnt/home
 
-# Prepare boot partition
+# Prepare efi partition
 mkdir /mnt/boot
 mkfs.fat -F32 /dev/sda1
 mount /dev/sda1 /mnt/boot

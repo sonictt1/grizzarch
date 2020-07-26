@@ -67,7 +67,7 @@ LUKSROOTFS="root=/dev/$VOLGRPNAME/root"
 LUKSKEY="rd.luks.key=$SDABOOTUUID=/boot/keyfile"
 
 # Install grub 
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB --removable
 echo "GRUB_CMDLINE_LINUX_DEFAULT=\"$LUKSNAME $LUKSOPTIONS $LUKSROOTFS $LUKSKEY\"" >> /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
