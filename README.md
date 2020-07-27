@@ -10,13 +10,13 @@ The philosophy of my arch build is "default first". In most cases, I find that t
 
 With an Arch distro, there isn't much that comes standard. There are a lot of components that come with `systemd`, however, and that's what I'm using for the majority of this build.
 
-During the early stages 
-
 **NOTE:** CHANGE THE LUKS AND USER PASSWORD AFTER YOU'VE IMPORTED THE VHD. CONSIDER THE DEFAULT PASSWORDS TO BE INSECURE AFTER INITIAL INSTALL. 
 
 [We'll come back to the passwords later on in the readme](#Important-notes-about-security)
 
 ## "Finished" elements
+
+- [GRUB bootloader](https://wiki.archlinux.org/index.php/GRUB) using UEFI (with `--removable` so the `.ovf` out the other side is bootable)
 
 - [LVM on LUKS encryption](https://wiki.archlinux.org/index.php/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS)
 
