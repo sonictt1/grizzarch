@@ -21,7 +21,10 @@
 		"hostname": "grizzarch",
 		"arch_vol_grp_name": "GrizzVolGrp",
 		"temp_install_script_folder_name": "temp_install_scripts",
-		"skip_export": "false"
+		"skip_export": "false",
+		"vb_x_conf_file_name": "80-virtualbox-x11.conf",
+		"vbox_graphics_controller": "vmsvga",
+		"vbox_vram_mb": "16"
 	},
 	"builders": [
 		{
@@ -56,10 +59,10 @@
 				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/setup-arch-user.sh<enter><wait3>",
 				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/swap-file-setup.sh<enter><wait3>",
 				"/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/move_files_to_new_install.sh<enter><wait3>",
-				"chown root ./*.sh<enter><wait1>",
-				"chmod 744 ./*.sh<enter><wait1>",
-				"/usr/bin/bash ./set_up_drives_LVM_on_LUKS.sh -p ./sfdisk_input.conf -g GrizzVolGrp -d \"/dev/sda\" -r \"{{user `root_size`}}\" -P {{user `encryption_pass`}}<enter><wait5>",
-				"/usr/bin/bash ./arch-install.sh -f \"mkinitcpio-custom.conf\" -p \".\"<wait1><enter><wait110>",
+				"chown root ./*.sh<enter><wait2>",
+				"chmod 744 ./*.sh<enter><wait2>",
+				"/usr/bin/bash ./set_up_drives_LVM_on_LUKS.sh -p ./sfdisk_input.conf -g GrizzVolGrp -d \"/dev/sda\" -r \"{{user `root_size`}}\" -P {{user `encryption_pass`}}<enter><wait15>",
+				"/usr/bin/bash ./arch-install.sh -f \"mkinitcpio-custom.conf\" -p \".\"<wait1><enter><wait145>",
 				"/usr/bin/bash ./move_files_to_new_install.sh -n {{ user `temp_install_script_folder_name` }}<enter><wait3>",
 				"arch-chroot /mnt<enter><wait3>",
 				"./{{ user `temp_install_script_folder_name` }}/configure-arch.sh -c '{{ user `country` }}' -r '{{ user `region` }}' -h {{ user `hostname` }} -g {{ user `arch_vol_grp_name` }}<enter><wait30>",
@@ -78,16 +81,59 @@
 					"--firmware",
 					"efi64"
 				]
+			],
+			"vboxmanage_post": [
+				[
+					"modifyvm",
+					"{{.Name}}",
+					"--graphicscontroller",
+					"{{ user `vbox_graphics_controller` }}",
+					"--vram",
+					"{{ user `vbox_vram_mb` }}"
+				]
 			]
 		}
 	],
 	"provisioners": [
+		{
+			"type": "file",
+			"source": "ssh/10-virtualbox-x11.conf",
+			"destination": "/home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }}"
+		},
+		{
+			"type": "shell",
+			"script": "ssh/create-directories.sh",
+			"execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }}"
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"mkdir -p /usr/X11/xorg.conf.d/",
+				"mv /home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }} /usr/X11/xorg.conf.d/{{ user `vb_x_conf_file_name` }}"
+			],
+			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
+		},
 		{
 			"type": "shell",
 			"scripts": [
 				"ssh/other-packages.sh"
 			],
 			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
+		},
+		{
+			"type": "file",
+			"source": "ssh/i3_conf",
+			"destination": "/home/{{ user `arch_user` }}/.config/i3/config"
+		},
+		{
+			"type": "file",
+			"source": "ssh/.xinitrc",
+			"destination": "/home/{{ user `arch_user` }}/.xinitrc"
+		},
+		{
+			"type": "file",
+			"source": "ssh/.bash_profile",
+			"destination": "/home/{{ user `arch_user` }}/.bash_profile"
 		}
 	]
 }
