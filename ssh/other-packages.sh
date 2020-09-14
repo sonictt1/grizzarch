@@ -1,4 +1,4 @@
-pacman -S --noconfirm vim
-pacman -S --noconfirm xorg xorg-xinit xterm
+pacman -S --noconfirm xorg xorg-xinit xterm xcompmgr
 pacman -S --noconfirm ttf-droid
-pacman -S --noconfirm i3 dmenu
+pacman -S --noconfirm i3-gaps dmenu
+pacman -S --noconfirm git vim termite firefox

@@ -49,4 +49,5 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
 fi
 
 xrandr --output Virtual1 --mode 1280x960
+xcompmgr -c &
 exec i3

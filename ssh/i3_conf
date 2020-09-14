@@ -10,9 +10,6 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
-set $hires 1440x900
-set $medres 1280x960
-set $lores 1360x768
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -40,31 +37,41 @@ bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
-# xrandr binds for dynamic resolution on virutalbox
+# Border and corner radius
+default_border none
+
+# xrandr binds for forced resolution on virutalbox
 
 bindsym $mod+m mode "$change_displays"
 
 mode "$change_displays" {
-	bindsym 1 exec xrandr --output Virtual1 --mode 1440x900
-	bindsym 2 exec xrandr --output Virtual1 --mode 1280x960
-	bindsym 3 exec xrandr --output Virtual1 --mode 1360x768
+	bindsym 1 exec xrandr --output Virtual1 --mode 2560x1440 --primary
+	bindsym 2 exec xrandr --output Virtual1 --mode 1920x1200 --primary
+	bindsym 3 exec xrandr --output Virtual1 --mode 1440x900 --primary
 
-	bindsym 4 exec xrandr --output Virtual2 --mode 1440x900 --left-of Virtual1
+	bindsym 4 exec xrandr --output Virtual2 --mode 1400x1050 --left-of Virtual1
 	bindsym 5 exec xrandr --output Virtual2 --mode 1280x960 --left-of Virtual1
 	bindsym 6 exec xrandr --output Virtual2 --mode 1360x768 --left-of Virtual1
 
-	bindsym 7 exec xrandr --output Virtual3 --mode 1440x900 --right-of Virtual1
+	bindsym 7 exec xrandr --output Virtual3 --mode 1400x1050 --right-of Virtual1
 	bindsym 8 exec xrandr --output Virtual3 --mode 1280x960 --right-of Virtual1
 	bindsym 9 exec xrandr --output Virtual3 --mode 1360x768 --right-of Virtual1
 
 	bindsym Escape mode "default"
 }
 
+# Gaps
+gaps bottom 5
+gaps top 3
+gaps left 5
+gaps right 5
+gaps inner 3
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec termite
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -202,4 +209,9 @@ bindsym $mod+r mode "resize"
 bar {
         font pango:Droid Sans Mono 10
         status_command i3status
+        mode hide
+        tray_output primary
+        colors {
+                background #00000090
+        }
 }

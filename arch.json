@@ -107,14 +107,6 @@
 		},
 		{
 			"type": "shell",
-			"inline": [
-				"mkdir -p /usr/X11/xorg.conf.d/",
-				"mv /home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }} /usr/X11/xorg.conf.d/{{ user `vb_x_conf_file_name` }}"
-			],
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
-		},
-		{
-			"type": "shell",
 			"scripts": [
 				"ssh/other-packages.sh"
 			],
@@ -127,6 +119,11 @@
 		},
 		{
 			"type": "file",
+			"source": "ssh/term_conf",
+			"destination": "/home/{{ user `arch_user` }}/.config/termite/config"
+		},
+		{
+			"type": "file",
 			"source": "ssh/.xinitrc",
 			"destination": "/home/{{ user `arch_user` }}/.xinitrc"
 		},
@@ -134,6 +131,15 @@
 			"type": "file",
 			"source": "ssh/.bash_profile",
 			"destination": "/home/{{ user `arch_user` }}/.bash_profile"
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"mkdir -p /usr/X11/xorg.conf.d/",
+				"mv /home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }} /usr/X11/xorg.conf.d/{{ user `vb_x_conf_file_name` }}",
+				"systemctl enable vboxservice"
+			],
+			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
 		}
 	]
 }
