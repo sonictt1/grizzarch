@@ -12,3 +12,6 @@ output-virtualbox-iso/
 # If you name your packer log output file 
 # log.txt it won't be accidentally committed
 log.txt
+
+# For my own convenience (will find a better solution later), omit personal scripts
+ssh/personal/

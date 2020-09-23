@@ -24,7 +24,8 @@
 		"skip_export": "false",
 		"vb_x_conf_file_name": "80-virtualbox-x11.conf",
 		"vbox_graphics_controller": "vmsvga",
-		"vbox_vram_mb": "16"
+		"vbox_vram_mb": "16",
+		"user_scripts"
 	},
 	"builders": [
 		{
@@ -136,10 +137,18 @@
 			"type": "shell",
 			"inline": [
 				"mkdir -p /usr/X11/xorg.conf.d/",
-				"mv /home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }} /usr/X11/xorg.conf.d/{{ user `vb_x_conf_file_name` }}",
-				"systemctl enable vboxservice"
+				"mv /home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }} /usr/X11/xorg.conf.d/{{ user `vb_x_conf_file_name` }}"
 			],
 			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"systemctl enable vboxservice"
+			],
+			"only": [
+				"virtualbox-iso"
+			]
 		}
 	]
 }
