@@ -25,7 +25,7 @@
 		"vb_x_conf_file_name": "80-virtualbox-x11.conf",
 		"vbox_graphics_controller": "vmsvga",
 		"vbox_vram_mb": "16",
-		"user_scripts"
+		"wallpaper_url": ""
 	},
 	"builders": [
 		{
@@ -143,9 +143,15 @@
 		},
 		{
 			"type": "shell",
+			"script": "ssh/download_wallpaper.sh",
+			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }} -p {{ user `wallpaper_url` }}"
+		},
+		{
+			"type": "shell",
 			"inline": [
 				"systemctl enable vboxservice"
 			],
+			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}",
 			"only": [
 				"virtualbox-iso"
 			]

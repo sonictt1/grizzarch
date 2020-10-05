@@ -48,5 +48,6 @@ if [ -d /etc/X11/xinit/xinitrc.d ] ; then
  unset f
 fi
 
+feh --bg-fill --randomize ~/.config/wallpapers/*
 xcompmgr -c &
 exec i3

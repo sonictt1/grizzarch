@@ -7,3 +7,5 @@ while getopts u: option
     done
 
 mkdir -p /home/$USRNM/.config/i3/
+mkdir -p /home/$USRNM/.config/termite/
+mkdir -p /home/$USRNM/.config/wallpapers/
