@@ -125,6 +125,14 @@
 		},
 		{
 			"type": "file",
+			"source": "ssh/i3status_conf_vb",
+			"destination": "/home/{{ user `arch_user` }}/.config/i3status/config",
+			"only": [
+				"virtualbox-iso"
+			]
+		},
+		{
+			"type": "file",
 			"source": "ssh/.xinitrc",
 			"destination": "/home/{{ user `arch_user` }}/.xinitrc"
 		},

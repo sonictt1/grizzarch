@@ -9,3 +9,4 @@ while getopts u: option
 mkdir -p /home/$USRNM/.config/i3/
 mkdir -p /home/$USRNM/.config/termite/
 mkdir -p /home/$USRNM/.config/wallpapers/
+mkdir -p /home/$USRNM/.config/i3status/
