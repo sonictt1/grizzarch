@@ -22,15 +22,23 @@ With an Arch distro, there isn't much that comes standard. There are a lot of co
 
 - [systemd](https://wiki.archlinux.org/index.php/Systemd) (including [networkd](https://wiki.archlinux.org/index.php/Systemd-networkd) and [resolved](https://wiki.archlinux.org/index.php/Systemd-resolved))
 
+- [i3](https://i3wm.org/) with custom i3status config
+
+- [termite](https://wiki.archlinux.org/index.php/Termite) with custom config
+
+- Default user config is copied to /etc/skel_grizzarch/ so new users inherit the starting customizations. The default /etc/skel/ is left intact.
+
 ## Future plans
 
-- Common software (web browser, text editor, terminal, app launcher)
-- Window manager (probably [i3](https://i3wm.org/))
 - [Steam](https://wiki.archlinux.org/index.php/Steam) + [Proton](https://github.com/ValveSoftware/Proton/)
 - [Android Studio](https://wiki.archlinux.org/index.php/Android#Android_Studio)
 - plug-and-play `/home/$USER` directory on separate VHD
 - [ARCHISO](https://wiki.archlinux.org/index.php/Archiso) image to be able to install this arch image to physical hardware from a flash drive
 - Other cool projects, as I think of them :) 
+
+# Decisions
+
+- Decided against including XDG default folders. I'm pretty particular about how my home directory is organized, so defaults usually just annoy me.
 
 ## Build system
 

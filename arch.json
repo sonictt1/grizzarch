@@ -97,21 +97,27 @@
 	],
 	"provisioners": [
 		{
-			"type": "file",
-			"source": "ssh/10-virtualbox-x11.conf",
-			"destination": "/home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }}"
-		},
-		{
 			"type": "shell",
-			"script": "ssh/create-directories.sh",
+			"script": "ssh/create_directories_user.sh",
 			"execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }}"
 		},
 		{
 			"type": "shell",
 			"scripts": [
-				"ssh/other-packages.sh"
+				"ssh/create_directories_root.sh",
+				"ssh/other_packages.sh"
 			],
 			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
+		},
+		{
+			"type": "shell",
+			"script": "ssh/download_wallpaper.sh",
+			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }} -p {{ user `wallpaper_url` }}"
+		},
+		{
+			"type": "file",
+			"source": "ssh/.xinitrc",
+			"destination": "/home/{{ user `arch_user` }}/.xinitrc"
 		},
 		{
 			"type": "file",
@@ -133,26 +139,20 @@
 		},
 		{
 			"type": "file",
-			"source": "ssh/.xinitrc",
-			"destination": "/home/{{ user `arch_user` }}/.xinitrc"
-		},
-		{
-			"type": "file",
 			"source": "ssh/.bash_profile",
 			"destination": "/home/{{ user `arch_user` }}/.bash_profile"
 		},
 		{
-			"type": "shell",
-			"inline": [
-				"mkdir -p /usr/X11/xorg.conf.d/",
-				"mv /home/{{ user `arch_user` }}/{{ user `vb_x_conf_file_name` }} /usr/X11/xorg.conf.d/{{ user `vb_x_conf_file_name` }}"
-			],
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
+			"type": "file",
+			"source": "ssh/useradd_conf",
+			"destination": "/home/{{ user `arch_user` }}/useradd"
 		},
 		{
 			"type": "shell",
-			"script": "ssh/download_wallpaper.sh",
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }} -p {{ user `wallpaper_url` }}"
+			"inline": [
+				"mv /home/{{ user `arch_user` }}/useradd /etc/default/useradd"
+			],
+			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
 		},
 		{
 			"type": "shell",
@@ -163,6 +163,13 @@
 			"only": [
 				"virtualbox-iso"
 			]
+		},
+		{
+			"type": "shell",
+			"inline": [
+				"cp -a /home/{{ user `arch_user`}}/. /etc/skel_grizzarch/"
+			],
+			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
 		}
 	]
 }

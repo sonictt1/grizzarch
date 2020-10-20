@@ -6,6 +6,8 @@ while getopts u: option
         esac
     done
 
+# The user will already be created so we need to 
+# make these spaces ourselves
 mkdir -p /home/$USRNM/.config/i3/
 mkdir -p /home/$USRNM/.config/termite/
 mkdir -p /home/$USRNM/.config/wallpapers/
