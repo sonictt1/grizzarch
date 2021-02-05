@@ -11,7 +11,7 @@ while getopts f:p:c:n: option
 
 # Bootstrap Arch
 echo "------------- Beginning Arch bootstrap now -------------"
-pacstrap /mnt base linux linux-firmware base-devel grub efibootmgr lvm2 sudo openssh
+pacstrap /mnt base linux linux-firmware base-devel grub efibootmgr lvm2 sudo openssh devtools go
 
 # Generate fstab
 echo "------------- pacstrap complete, moving/generating config files ------------"
