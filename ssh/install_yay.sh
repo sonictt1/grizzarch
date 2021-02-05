@@ -2,12 +2,15 @@ while getopts u: option
     do 
         case "${option}"
             in
-                u) USER=${OPTARG};;
+                u) USERNAME=${OPTARG};;
         esac
     done
 
-git clone https://aur.archlinux.org/yay-git.git
+# fetch pkgbuild
+cd /home/$USERNAME/ 
+git clone https://aur.archlinux.org/yay.git
+# build software
+cd yay/
+makepkg -si --noconfirm
 
-sudo chown -R $USER:$USER ./yay-git
-
-cd yay-git && makepkg -sic
+cp *.pkg.tar.zst /home/$USERNAME/built_pkgs/

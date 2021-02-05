@@ -17,7 +17,8 @@
 		"output_path": "output-virtualbox-iso",
 		"memory": "4096",
 		"cpus": "2",
-		"root_size": "8GB",
+		"root_size": "15GB",
+		"total_disk_size": "35690",
 		"hostname": "grizzarch",
 		"arch_vol_grp_name": "GrizzVolGrp",
 		"temp_install_script_folder_name": "temp_install_scripts",
@@ -27,7 +28,8 @@
 		"vbox_vram_mb": "16",
 		"wallpaper_url": "",
 		"mkinitcpio_filename": "mkinitcpio-custom.conf",
-		"mkinitcpio_pacman_preset_filename": "linux.preset"
+		"mkinitcpio_pacman_preset_filename": "linux.preset",
+		"archiso_build_folder": "grizzarch_mkiso"
 	},
 	"builders": [
 		{
@@ -40,7 +42,7 @@
 			"http_directory": "http",
 			"boot_wait": "3s",
 			"iso_target_path": "{{user `arch_iso_path`}}/{{user `arch_iso_filename`}}.iso",
-			"disk_size": 20480,
+			"disk_size": "{{user `total_disk_size`}}",
 			"hard_drive_interface": "sata",
 			"ssh_username": "{{user `arch_user`}}",
 			"ssh_password": "{{user `arch_pass`}}",
@@ -101,21 +103,28 @@
 	"provisioners": [
 		{
 			"type": "shell",
-			"script": "ssh/create_directories_user.sh",
+			"scripts": [
+				"ssh/create_directories_root.sh",
+				"ssh/other_packages.sh"
+			],
+			"execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+		},
+		{
+			"type": "shell",
+			"scripts": [
+				"ssh/create_directories_user.sh",
+				"ssh/install_yay.sh",
+				"ssh/build_cust_pac_repo.sh",
+				"ssh/archiso_setup.sh"
+			],
 			"execute_command": "chmod +x {{ .Path }}; {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }}"
 		},
 		{
 			"type": "shell",
 			"scripts": [
-				"ssh/create_directories_root.sh",
-				"ssh/other_packages.sh"
+				"ssh/download_wallpaper.sh"
 			],
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
-		},
-		{
-			"type": "shell",
-			"script": "ssh/download_wallpaper.sh",
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }} -p {{ user `wallpaper_url` }}"
+			"execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }} -u {{ user `arch_user` }} -p {{ user `wallpaper_url` }}"
 		},
 		{
 			"type": "file",
@@ -153,26 +162,38 @@
 		{
 			"type": "shell",
 			"inline": [
-				"mv /home/{{ user `arch_user` }}/useradd /etc/default/useradd"
+				"mv /home/{{ user `arch_user` }}/useradd /etc/default/useradd",
+				"systemctl enable vboxservice",
+				"cp -a /home/{{ user `arch_user`}}/. /etc/skel_grizzarch/",
+				"chown -R root:root /etc/skel_grizzarch/",
+				"rm -r /home/{{ user `arch_user` }}/yay/",
+				"rm /etc/sudoers.d/99build_only_sudo"
 			],
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
+			"execute_command": "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
 		},
 		{
-			"type": "shell",
-			"inline": [
-				"systemctl enable vboxservice"
-			],
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}",
-			"only": [
-				"virtualbox-iso"
-			]
+			"type": "file",
+			"source": "ssh/pacman.conf",
+			"destination": "/home/{{ user `arch_user` }}/{{ user `archiso_build_folder` }}/pacman.conf"
 		},
 		{
-			"type": "shell",
-			"inline": [
-				"cp -a /home/{{ user `arch_user`}}/. /etc/skel_grizzarch/"
+			"type": "file",
+			"source": "ssh/profiledef.sh",
+			"destination": "/home/{{ user `arch_user` }}/{{ user `archiso_build_folder` }}/profiledef.sh"
+		},
+		{
+			"type": "file",
+			"source": "ssh/packages.x86_64",
+			"destination": "/home/{{ user `arch_user` }}/{{ user `archiso_build_folder` }}/packages.x86_64"
+		},
+		{
+			"type": "file",
+			"sources": [
+				"ssh/custom_grizzarch.db.tar.gz",
+				"ssh/archiso_systemd_boot.conf",
+				"ssh/archiso_systemd_arch_loader.conf"
 			],
-			"execute_command": "chmod +x {{ .Path }}; echo '{{ user `arch_pass` }}' | sudo -S {{ .Vars }} {{ .Path }}"
+			"destination": "/home/{{ user `arch_user` }}/{{ user `archiso_build_folder` }}/"
 		}
 	]
 }

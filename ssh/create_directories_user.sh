@@ -12,3 +12,5 @@ mkdir -p /home/$USRNM/.config/i3/
 mkdir -p /home/$USRNM/.config/termite/
 mkdir -p /home/$USRNM/.config/wallpapers/
 mkdir -p /home/$USRNM/.config/i3status/
+mkdir -p /home/$USRNM/grizzarch_mkiso/
+mkdir -p /home/$USRNM/built_pkgs/
