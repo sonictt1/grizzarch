@@ -1,4 +1,4 @@
-while getopts c:r:h:g: option
+while getopts c:r:h:g:m: option
     do 
         case "${option}"
             in
@@ -6,6 +6,7 @@ while getopts c:r:h:g: option
                 r) REGION=${OPTARG};;
                 h) HOSTNAME=${OPTARG};;
                 g) VOLGRPNAME=${OPTARG};;
+                m) MKINITCPIOCONFNAME=${OPTARG};;
         esac
     done
 
@@ -79,6 +80,6 @@ touch /etc/vconsole.conf
 
 # Regenerate mkinitcpio image and replace the default
 KERNELVER=$(ls /lib/modules/)
-mkinitcpio -c /etc/mkinitcpio-custom.conf -k $KERNELVER -g /boot/initramfs-linux.img
+mkinitcpio -c /etc/$MKINITCPIOCONFNAME -k $KERNELVER -g /boot/initramfs-linux.img
 
 chmod 0400 /boot/keyfile
