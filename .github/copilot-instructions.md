@@ -6,7 +6,9 @@
 
 ## Core Philosophy
 
-> **"Default first"** — use stock defaults until there is a specific reason not to. Favour `systemd` components (`networkd`, `resolved`, etc.) over third-party equivalents.
+> **"Default first"** — use stock defaults until there is a specific reason not to.
+
+With Arch there isn't much that comes standard, but `systemd` covers a lot of ground. `systemd-networkd` and `systemd-resolved` handle networking instead of third-party tools.
 
 Security note: default credentials (`arch_user`, `arch_pass`, `encryption_pass`) in `arch.pkr.hcl` are intentionally insecure placeholders. Always change them after first boot.
 
