@@ -10,12 +10,12 @@ while getopts c:r:h:g:m: option
         esac
     done
 
-# Update pacman stuff
+# Update system fully before making any changes (partial -Sy without -u is dangerous on Arch)
 pacman -Syu --noconfirm
 
 # Add mappers to fstab
 echo "/dev/mapper/root	/	ext4	defaults	0	1" >> /etc/fstab
-echo "/dev/sda1	/boot	ext4	defaults	0	2" >> /etc/fstab
+echo "/dev/sda1	/boot	vfat	defaults	0	2" >> /etc/fstab
 # echo "/dev/mapper/tmp	/tmp	tmpfs	defaults	0	0" >> /etc/fstab
 # echo "tmp	/dev/$VOLGRPNAME/crypttmp	/dev/urandom	tmp,cipher=aes-xts-plain64,size=256" >> /etc/crypttab
 
@@ -47,7 +47,7 @@ echo "::1  localhost" >> /etc/hosts
 echo "127.0.0.1 $HOSTNAME.localdomain $HOSTNAME" >> /etc/hosts
 # cat /etc/hosts
 
-NETDEVNAME=$(ls /sys/class/net)
+NETDEVNAME=$(ls /sys/class/net | grep -v lo | head -1)
 systemctl enable systemd-networkd
 systemctl enable systemd-resolved
 echo "[Match]" >> /etc/systemd/network/default-vbox-wired.network

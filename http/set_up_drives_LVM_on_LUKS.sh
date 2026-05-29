@@ -20,8 +20,7 @@ sfdisk $TARGETDEVICE < $SFD_FP
 # dd if=/dev/urandom of=/keyfile bs=1024 count=4
 chown $USER /root/keyfile
 
-# Format & encrypt physical volume
-mkfs.ext4 /dev/sda2
+# Encrypt physical volume with LUKS
 cryptsetup -q --key-file /root/keyfile luksFormat /dev/sda2
 cryptsetup -q --key-file /root/keyfile open /dev/sda2 cryptlvm
 pvcreate /dev/mapper/cryptlvm
