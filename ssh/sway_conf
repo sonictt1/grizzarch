@@ -1,0 +1,199 @@
+# Sway config for grizzarch
+# https://github.com/swaywm/sway/wiki
+
+# Mod key: Super/Windows key
+set $mod Mod4
+
+# Font for window titles and bar
+font pango:monospace 8
+
+# Terminal
+set $term foot
+
+# Application launcher (Wayland-native dmenu replacement)
+set $menu wofi --show run
+
+# Display-change mode label
+set $change_displays "change displays"
+
+# Status bar refresh command (same as i3status refresh)
+set $refresh_status killall -SIGUSR1 i3status
+
+# Wallpaper — solid colour by default.
+# Change to: output * bg /path/to/wallpaper.png fill
+# after downloading a wallpaper with ssh/download_wallpaper.sh
+output * bg #282828 solid_color
+
+# Screen lock and idle management
+exec swayidle -w \
+    timeout 600  'swaylock -f -c 000000' \
+    timeout 1200 'swaymsg "output * dpms off"' \
+    resume       'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock -f -c 000000'
+
+# Volume controls (pactl works via pipewire-pulse)
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_status
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_status
+bindsym XF86AudioMute        exec pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_status
+bindsym XF86AudioMicMute     exec pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_status
+
+# Borders
+default_border none
+
+# VirtualBox output resolution modes
+# In Wayland/Sway, VirtualBox outputs are typically named Virtual-1, Virtual-2, etc.
+bindsym $mod+m mode "$change_displays"
+
+mode "$change_displays" {
+    # Primary display resolutions
+    bindsym 1 output Virtual-1 resolution 2560x1440 position 0 0
+    bindsym 2 output Virtual-1 resolution 1920x1200 position 0 0
+    bindsym 3 output Virtual-1 resolution 1440x900  position 0 0
+
+    # Second display (left of primary)
+    bindsym 4 output Virtual-2 resolution 1400x1050 position -1400 0
+    bindsym 5 output Virtual-2 resolution 1280x960  position -1280 0
+    bindsym 6 output Virtual-2 resolution 1360x768  position -1360 0
+
+    # Third display (right of primary)
+    bindsym 7 output Virtual-3 resolution 1400x1050 position 2560 0
+    bindsym 8 output Virtual-3 resolution 1280x960  position 2560 0
+    bindsym 9 output Virtual-3 resolution 1360x768  position 2560 0
+
+    bindsym Escape mode "default"
+}
+
+# Gaps
+gaps inner 3
+gaps outer 5
+gaps top 3
+gaps bottom 5
+
+# Mouse + Mod to drag floating windows
+floating_modifier $mod normal
+
+# Start terminal
+bindsym $mod+Return exec $term
+
+# Kill focused window
+bindsym $mod+Shift+q kill
+
+# Launch application launcher
+bindsym $mod+d exec $menu
+
+# Change focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
+bindsym $mod+Right focus right
+
+# Move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+bindsym $mod+Shift+Left  move left
+bindsym $mod+Shift+Down  move down
+bindsym $mod+Shift+Up    move up
+bindsym $mod+Shift+Right move right
+
+# Split orientation
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+# Fullscreen
+bindsym $mod+f fullscreen toggle
+
+# Container layout
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# Toggle focus between tiling / floating
+bindsym $mod+space focus mode_toggle
+
+# Focus parent container
+bindsym $mod+a focus parent
+
+# Workspaces
+set $ws1  "1"
+set $ws2  "2"
+set $ws3  "3"
+set $ws4  "4"
+set $ws5  "5"
+set $ws6  "6"
+set $ws7  "7"
+set $ws8  "8"
+set $ws9  "9"
+set $ws10 "10"
+
+# Switch to workspace
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# Move container to workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Reload the configuration file
+bindsym $mod+Shift+c reload
+
+# Exit Sway (with confirmation dialog via swaynag)
+bindsym $mod+Shift+e exec swaynag -t warning \
+    -m 'Exit Sway? This will end your Wayland session.' \
+    -B 'Yes, exit Sway' 'swaymsg exit'
+
+# Resize mode
+mode "resize" {
+    bindsym j          resize shrink width  10px
+    bindsym k          resize grow   height 10px
+    bindsym l          resize shrink height 10px
+    bindsym semicolon  resize grow   width  10px
+
+    bindsym Left  resize shrink width  10px
+    bindsym Down  resize grow   height 10px
+    bindsym Up    resize shrink height 10px
+    bindsym Right resize grow   width  10px
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# Status bar (swaybar with i3status backend — same config format as i3bar)
+bar {
+    font pango:Droid Sans Mono 10
+    status_command i3status
+    mode hide
+    tray_output primary
+    colors {
+        background #00000090
+    }
+}
