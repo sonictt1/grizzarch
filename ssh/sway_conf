@@ -13,6 +13,9 @@ set $term foot
 # Application launcher (Wayland-native dmenu replacement)
 set $menu wofi --show run
 
+# Display-change mode label
+set $change_displays "change displays"
+
 # Status bar refresh command (same as i3status refresh)
 set $refresh_status killall -SIGUSR1 i3status
 
@@ -101,8 +104,8 @@ bindsym $mod+Shift+Up    move up
 bindsym $mod+Shift+Right move right
 
 # Split orientation
-bindsym $mod+h splith
-bindsym $mod+v splitv
+bindsym $mod+h split h
+bindsym $mod+v split v
 
 # Fullscreen
 bindsym $mod+f fullscreen toggle
