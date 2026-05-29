@@ -4,7 +4,10 @@
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
-# Auto-start X
-if systemctl -q is-active graphical.target && [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
-  exec startx
+# Auto-start Sway on TTY1
+if [[ -z $WAYLAND_DISPLAY && $(tty) = /dev/tty1 ]]; then
+    # Required for VirtualBox Wayland/wlroots compatibility
+    export WLR_NO_HARDWARE_CURSORS=1
+    export WLR_RENDERER=pixman
+    exec sway
 fi
