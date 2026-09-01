@@ -1,0 +1,46 @@
+# Base system and installer
+base
+linux
+linux-firmware
+archinstall
+
+# Bootloader and encryption
+grub
+efibootmgr
+lvm2
+cryptsetup
+
+# System utilities
+base-devel
+sudo
+openssh
+git
+vim
+curl
+wget
+
+# Networking
+systemd
+dhcpcd
+iwd
+networkmanager
+
+# Filesystem tools
+dosfstools
+e2fsprogs
+ntfs-3g
+btrfs-progs
+xfsprogs
+
+# Hardware support
+amd-ucode
+intel-ucode
+sof-firmware
+
+# Terminal and utilities for live environment
+terminus-font
+tmux
+man-db
+man-pages
+texinfo
+less

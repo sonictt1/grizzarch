@@ -1,0 +1,41 @@
+general {
+	output_format = "i3bar"
+	colors = true
+	color_good = "#d6162f"
+	color_degraded = "#f7b900"
+	color_bad = "#f5ecf1"
+	interval = 5
+}
+
+
+
+order += "battery"
+
+battery 0 {
+	format_down = ""
+	low_threshold = 20
+	threshold_type = time
+	format = "%remaining %consumption %status"
+}
+
+order += "memory"
+
+memory {
+	format = "%used/%total %percentage_free free"
+	threshold_degraded = 25%
+	threshold_critical = 10%
+}
+
+order += "cpu_usage"
+
+cpu_usage {
+	format = "cpu %usage"
+	degraded_threshold = "85"
+	max_threshold = "90"
+}
+
+order += "time"
+
+time {
+	format = "%HH:%MM:%SS %d-%m-%Y"
+}

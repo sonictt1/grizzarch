@@ -199,10 +199,29 @@ passwd
 
 ---
 
+## Archiso — Bootable USB/ISO installer
+
+For installing grizzarch on physical hardware or in non-VirtualBox VMs, use the **archiso** build:
+
+```bash
+# Install archiso (requires Arch Linux)
+sudo pacman -S --needed archiso
+
+# Build the ISO
+cd archiso/profile
+sudo mkarchiso -v -w ../work -o ../out .
+
+# Write to USB
+sudo dd if=../out/grizzarch-*.iso of=/dev/sdX bs=4M status=progress oflag=sync
+```
+
+Boot from the USB and run:
+- `archinstall` — guided installation with grizzarch profile
+- See [`archiso/README.md`](archiso/README.md) for full documentation
+
 ## Future plans
 
 - Steam + Proton
 - Android Studio
 - Plug-and-play `/home/$USER` on a separate VHD
-- ARCHISO image for installing to physical hardware from a USB drive
 

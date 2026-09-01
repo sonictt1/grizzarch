@@ -1,0 +1,154 @@
+{
+    "archinstall-language": "English",
+    "!root-password": "testpass12",
+    "!encryption-password": "testpass12",
+    "bootloader": "grub",
+    "config_version": "2.6.0",
+    "debug": false,
+    "disk_config": {
+        "config_type": "manual_partitioning",
+        "device_modifications": [
+            {
+                "device": "/dev/sda",
+                "partitions": [
+                    {
+                        "btrfs": [],
+                        "flags": [
+                            "Boot",
+                            "ESP"
+                        ],
+                        "fs_type": "fat32",
+                        "length": {
+                            "sector_size": null,
+                            "total_size": null,
+                            "unit": "GiB",
+                            "value": 1
+                        },
+                        "mount_options": [],
+                        "mountpoint": "/boot",
+                        "obj_id": "1eafb3b1-3d9e-48f7-b3a7-3a6f940b8c9a",
+                        "start": {
+                            "sector_size": null,
+                            "total_size": null,
+                            "unit": "MiB",
+                            "value": 1
+                        },
+                        "status": "create",
+                        "type": "primary"
+                    },
+                    {
+                        "btrfs": [],
+                        "flags": [],
+                        "fs_type": "ext4",
+                        "length": {
+                            "sector_size": null,
+                            "total_size": null,
+                            "unit": "B",
+                            "value": 0
+                        },
+                        "mount_options": [],
+                        "mountpoint": null,
+                        "obj_id": "2eafb3b1-3d9e-48f7-b3a7-3a6f940b8c9b",
+                        "start": {
+                            "sector_size": null,
+                            "total_size": null,
+                            "unit": "GiB",
+                            "value": 1
+                        },
+                        "status": "create",
+                        "type": "primary",
+                        "encrypted": true,
+                        "lvm_volumes": [
+                            {
+                                "fs_type": "ext4",
+                                "length": {
+                                    "sector_size": null,
+                                    "total_size": null,
+                                    "unit": "GiB",
+                                    "value": 8
+                                },
+                                "mount_options": [],
+                                "mountpoint": "/",
+                                "name": "root",
+                                "status": "create"
+                            },
+                            {
+                                "fs_type": "ext4",
+                                "length": {
+                                    "sector_size": null,
+                                    "total_size": null,
+                                    "unit": "B",
+                                    "value": 0
+                                },
+                                "mount_options": [],
+                                "mountpoint": "/home",
+                                "name": "home",
+                                "status": "create"
+                            }
+                        ]
+                    }
+                ],
+                "wipe": true
+            }
+        ]
+    },
+    "hostname": "grizzarch",
+    "kernels": [
+        "linux"
+    ],
+    "locale_config": {
+        "kb_layout": "us",
+        "sys_enc": "UTF-8",
+        "sys_lang": "en_US"
+    },
+    "mirror_config": {
+        "mirror_regions": {
+            "Worldwide": [
+                "https://mirrors.ocf.berkeley.edu/archlinux/$repo/os/$arch"
+            ]
+        }
+    },
+    "network_config": {
+        "type": "nm"
+    },
+    "ntp": true,
+    "offline": false,
+    "packages": [
+        "base-devel",
+        "git",
+        "vim",
+        "wayland",
+        "xorg-xwayland",
+        "sway",
+        "swaylock",
+        "swayidle",
+        "swaybg",
+        "foot",
+        "wofi",
+        "i3status",
+        "pipewire",
+        "pipewire-pulse",
+        "pipewire-alsa",
+        "wireplumber",
+        "alsa-utils",
+        "ttf-droid",
+        "xdg-utils",
+        "xdg-desktop-portal-wlr",
+        "polkit"
+    ],
+    "parallel downloads": 5,
+    "profile_config": null,
+    "script": "guided",
+    "silent": false,
+    "swap": true,
+    "timezone": "US/Central",
+    "!users": [
+        {
+            "!password": "testpass12",
+            "sudo": true,
+            "username": "testuser"
+        }
+    ],
+    "version": "2.6.0"
+}
+

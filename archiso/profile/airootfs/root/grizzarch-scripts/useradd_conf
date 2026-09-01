@@ -1,0 +1,9 @@
+# useradd defaults for ArchLinux
+# Changes by Nic
+GROUP=users
+HOME=/home
+INACTIVE=-1
+EXPIRE=
+SHELL=/bin/bash
+SKEL=/etc/skel_grizzarch
+CREATE_MAIL_SPOOL=no

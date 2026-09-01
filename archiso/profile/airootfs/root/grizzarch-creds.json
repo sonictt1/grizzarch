@@ -1,0 +1,11 @@
+{
+    "!root-password": "testpass12",
+    "!users": [
+        {
+            "username": "testuser",
+            "password": "testpass12",
+            "sudo": true
+        }
+    ],
+    "!encryption-password": "testpass12"
+}
